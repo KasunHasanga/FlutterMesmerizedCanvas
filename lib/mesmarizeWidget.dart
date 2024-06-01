@@ -9,11 +9,13 @@ class MesmerizeWidget extends StatefulWidget {
   @override
   State<MesmerizeWidget> createState() => _MesmerizeWidgetState();
 }
-
+const step =30.0;
 class _MesmerizeWidgetState extends State<MesmerizeWidget> {
 
   late final Timer timer;
   double theta=0.0;
+  double maxAngle =step;
+  int counter=0;
 
   @override
   void initState() {
@@ -21,7 +23,9 @@ class _MesmerizeWidgetState extends State<MesmerizeWidget> {
     timer =Timer.periodic(const Duration(milliseconds: 25), (timer) {
       setState(() {
         theta +=0.01;
+        maxAngle +=counter %10 ==0?step:0.0;
       });
+      counter++;
     });
   }
 
@@ -29,11 +33,11 @@ class _MesmerizeWidgetState extends State<MesmerizeWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("mesmarized "),
+        title: const Text("mesmarized "),
       ),
       body: CustomPaint(
+        painter: MesmarizePainter(theta,maxAngle ),
         child: Container(),
-        painter: MesmarizePainter(theta),
       ),
     );
   }
@@ -45,10 +49,11 @@ final bgPaint = Paint()
 
 class MesmarizePainter extends CustomPainter {
    double theta;
-  MesmarizePainter(this. theta);
+   double maxAngle = 720.0;
+  MesmarizePainter(this. theta,this.maxAngle);
 
-  final maxAngle = 720.0;
-  final step = 30.0;
+  // final maxAngle = 720.0;
+  // final step = 30.0;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -70,7 +75,7 @@ class MesmarizePainter extends CustomPainter {
 
   void drawCircle(Canvas canvas, Offset c, double r, double angle, double theta) {
     final paint = Paint()
-      ..color = Color(0xFF4CC5F5)
+      ..color = const Color(0xFF4CC5F5)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(c, r, paint);
     final k = r * 2;
