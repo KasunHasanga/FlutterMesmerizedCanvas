@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,20 @@ class MesmerizeWidget extends StatefulWidget {
 }
 
 class _MesmerizeWidgetState extends State<MesmerizeWidget> {
+
+  late final Timer timer;
+  double theta=0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    timer =Timer.periodic(const Duration(milliseconds: 25), (timer) {
+      setState(() {
+        theta +=0.01;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +33,7 @@ class _MesmerizeWidgetState extends State<MesmerizeWidget> {
       ),
       body: CustomPaint(
         child: Container(),
-        painter: MesmarizePainter(),
+        painter: MesmarizePainter(theta),
       ),
     );
   }
@@ -29,6 +44,9 @@ final bgPaint = Paint()
   ..style = PaintingStyle.fill;
 
 class MesmarizePainter extends CustomPainter {
+   double theta;
+  MesmarizePainter(this. theta);
+
   final maxAngle = 720.0;
   final step = 30.0;
 
@@ -40,7 +58,7 @@ class MesmarizePainter extends CustomPainter {
     double r = size.width / 2;
     // drawCircle(canvas,c,r);
     for (double angle = 0.0; angle < maxAngle; angle += step) {
-      drawCircle(canvas, c, r, angle);
+      drawCircle(canvas, c, r, angle,theta);
       r = r * 0.8;
     }
   }
@@ -50,7 +68,7 @@ class MesmarizePainter extends CustomPainter {
     return true;
   }
 
-  void drawCircle(Canvas canvas, Offset c, double r, double angle) {
+  void drawCircle(Canvas canvas, Offset c, double r, double angle, double theta) {
     final paint = Paint()
       ..color = Color(0xFF4CC5F5)
       ..style = PaintingStyle.fill;
@@ -60,7 +78,7 @@ class MesmarizePainter extends CustomPainter {
 
     canvas.save();
     canvas.translate(c.dx, c.dy);
-    canvas.rotate(angle * pi / 180);
+    canvas.rotate(angle * pi / 180 +theta);
     canvas.drawOval(rect, bgPaint);
     canvas.restore();
   }
